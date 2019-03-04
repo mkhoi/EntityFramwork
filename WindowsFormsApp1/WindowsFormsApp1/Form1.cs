@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Entity;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -9,10 +10,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WindowsFormsApp1.Models;
 
+
 namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
+
+        DatabaseContext db = new DatabaseContext();
+
         public Form1()
         {
             InitializeComponent();
@@ -24,27 +29,21 @@ namespace WindowsFormsApp1
             cmbGender.Items.Add("Female");
             Display();
         }
-
+        
         public void Display()
         {
-            using (StudentInformationEntities _entity = new StudentInformationEntities())
+           
+            using (DatabaseContext db = new DatabaseContext())
             {
                 List<StudentInformation> _studentList = new List<StudentInformation>();
-                _studentList = _entity.StudentDetails.Select(x => new StudentInformation
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Age = x.Age,
-                    City = x.City,
-                    Gender = x.Gender
-                }).ToList();
+                _studentList = db.Students.ToList();
                 dataGridView.DataSource = _studentList;
             }
         }
 
         private void btn_Save_Click(object sender, EventArgs e)
         {
-            StudentDetail stu = new StudentDetail();
+            StudentInformation stu = new StudentInformation();
             stu.Name = txtName.Text;
             stu.Age = Convert.ToInt32(txtAge.Text);
             stu.City = txtCity.Text;
@@ -53,14 +52,17 @@ namespace WindowsFormsApp1
             ShowStatus(result, "Save");
         }
 
-        public bool SaveStudentDetails(StudentDetail stu)
+        public bool SaveStudentDetails(StudentInformation stu)
         {
             bool result = false;
-            using (StudentInformationEntities _entity = new StudentInformationEntities())
+            using (DatabaseContext db = new DatabaseContext())
             {
-                _entity.StudentDetails.Add(stu);
-                _entity.SaveChanges();
+                db.Students.Add(stu);
+
+                db.SaveChanges();
                 result = true;
+                
+      
             }
             return result;
         }
@@ -82,22 +84,22 @@ namespace WindowsFormsApp1
 
         private void btn_Update_Click(object sender, EventArgs e)
         {
-            StudentDetail stu = SetValues(Convert.ToInt32(lbl_ID.Text), txtName.Text, Convert.ToInt32(txtAge.Text), txtCity.Text, cmbGender.SelectedItem.ToString());
+            StudentInformation stu = SetValues(Convert.ToInt32(lbl_ID.Text), txtName.Text, Convert.ToInt32(txtAge.Text), txtCity.Text, cmbGender.SelectedItem.ToString());
             bool result = UpdateStudentDetails(stu);
             ShowStatus(result, "Update");
         }
 
-        public bool UpdateStudentDetails(StudentDetail stu)
+        public bool UpdateStudentDetails(StudentInformation stu)
         {
             bool result = false;
-            using (StudentInformationEntities _entity = new StudentInformationEntities())
+            using (DatabaseContext db = new DatabaseContext())
             {
-                StudentDetail _student = _entity.StudentDetails.Where(x => x.Id == stu.Id).Select(x => x).FirstOrDefault();
+                StudentInformation _student = db.Students.Where(x => x.Id == stu.Id).Select(x => x).FirstOrDefault();
                 _student.Name = stu.Name;
                 _student.Age = stu.Age;
                 _student.City = stu.City;
                 _student.Gender = stu.Gender;
-                _entity.SaveChanges();
+                db.SaveChanges();
                 result = true;
             }
             return result;
@@ -105,19 +107,19 @@ namespace WindowsFormsApp1
 
         private void btn_Delete_Click(object sender, EventArgs e)
         {
-            StudentDetail stu = SetValues(Convert.ToInt32(lbl_ID.Text), txtName.Text, Convert.ToInt32(txtAge.Text), txtCity.Text, cmbGender.SelectedItem.ToString());
+            StudentInformation stu = SetValues(Convert.ToInt32(lbl_ID.Text), txtName.Text, Convert.ToInt32(txtAge.Text), txtCity.Text, cmbGender.SelectedItem.ToString());
             bool result = DeleteStudentDetails(stu);
             ShowStatus(result, "Delete");
         }
 
-        public bool DeleteStudentDetails(StudentDetail stu)
+        public bool DeleteStudentDetails(StudentInformation stu)
         {
             bool result = false;
-            using (StudentInformationEntities _entity = new StudentInformationEntities())
+            using (DatabaseContext db = new DatabaseContext())
             {
-                StudentDetail _student = _entity.StudentDetails.Where(x => x.Id == stu.Id).Select(x => x).FirstOrDefault();
-                _entity.StudentDetails.Remove(_student);
-                _entity.SaveChanges();
+                StudentInformation _student = db.Students.Where(x => x.Id == stu.Id).Select(x => x).FirstOrDefault();
+                db.Students.Remove(_student);
+                db.SaveChanges();
                 result = true;
             }
             return result;
@@ -156,9 +158,9 @@ namespace WindowsFormsApp1
             cmbGender.SelectedIndex = -1;
         }
 
-        public StudentDetail SetValues(int Id, string Name, int Age, string City, string Gender)
+        public StudentInformation SetValues(int Id, string Name, int Age, string City, string Gender)
         {
-            StudentDetail stu = new StudentDetail();
+            StudentInformation stu = new StudentInformation();
             stu.Id = Id;
             stu.Name = Name;
             stu.Age = Age;

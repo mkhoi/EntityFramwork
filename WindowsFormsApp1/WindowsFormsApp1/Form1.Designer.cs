@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lbl_ID = new System.Windows.Forms.Label();
             this.lbl_StDetails = new System.Windows.Forms.Label();
@@ -44,9 +45,11 @@
             this.lbl_City = new System.Windows.Forms.Label();
             this.lbl_Age = new System.Windows.Forms.Label();
             this.lbl_Name = new System.Windows.Forms.Label();
+            this.studentInformationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.studentInformationBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -244,6 +247,10 @@
             this.lbl_Name.Text = "Name";
             this.lbl_Name.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // studentInformationBindingSource
+            // 
+            this.studentInformationBindingSource.DataSource = typeof(WindowsFormsApp1.Models.StudentInformation);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -259,6 +266,7 @@
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.studentInformationBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -281,6 +289,7 @@
         private System.Windows.Forms.Button btn_Update;
         private System.Windows.Forms.Button btn_Save;
         private System.Windows.Forms.DataGridView dataGridView;
+        private System.Windows.Forms.BindingSource studentInformationBindingSource;
     }
 }
 
